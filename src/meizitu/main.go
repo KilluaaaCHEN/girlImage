@@ -79,6 +79,7 @@ func getDetail(url string, dirName string) {
 	tool.CheckDir(dirName)
 	for i := 1; i <= totalCount; i++ {
 		imgUrl := strings.Replace(firstImg, "01.jpg", fmt.Sprintf("%02d", i)+".jpg", 1)
+		wg.Add(1)
 		tool.SaveFile(imgUrl, dirName, Header, delay, &wg)
 	}
 }
