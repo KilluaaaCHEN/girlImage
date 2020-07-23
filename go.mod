@@ -2,4 +2,7 @@ module girlImage
 
 go 1.14
 
-require github.com/PuerkitoBio/goquery v1.5.1
+require (
+	github.com/PuerkitoBio/goquery v1.5.1
+	github.com/disintegration/imaging v1.6.2 // indirect
+)
