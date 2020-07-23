@@ -78,3 +78,4 @@ func cutFile(oldFile string) {
 		return
 	}
 }
+

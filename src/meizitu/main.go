@@ -12,13 +12,23 @@ import (
 	"time"
 )
 
-const URL = "https://www.mzitu.com/mm/page/"
+var imgList = map[string]string{
+	"1": "https://www.mzitu.com/page/",
+	"2": "https://www.mzitu.com/hot/page/",
+	"3": "https://www.mzitu.com/best/page/",
+	"4": "https://www.mzitu.com/xinggan/page/",
+	"5": "https://www.mzitu.com/japan/page/",
+	"6": "https://www.mzitu.com/taiwan/page/",
+	"7": "https://www.mzitu.com/mm/page/",
+}
+
+var url string
 
 var ImgPath = "/images/meizitu/"
 
 var Header = map[string]string{
 	"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.92 Safari/537.36",
-	"referer":    URL,
+	"referer":    "https://www.mzitu.com/page/",
 }
 
 var pageIndex = 1
@@ -26,14 +36,29 @@ var delay = 500 //每次请求延迟
 var wg sync.WaitGroup
 
 func main() {
+	fmt.Println("1. 最新图片")
+	fmt.Println("2. 最热图片")
+	fmt.Println("3. 推荐图片")
+	fmt.Println("4. 性感妹子")
+	fmt.Println("5. 日本妹子")
+	fmt.Println("6. 台湾妹子")
+	fmt.Println("7. 清纯妹子")
+	fmt.Print("请输入要下载的图片类型:")
+	defer tool.End()
+	var imgType string
+	fmt.Scanln(&imgType)
+	url = imgList[imgType]
+	if url == "" {
+		url = imgList["1"]
+	}
+	fmt.Println(url)
 	dir, _ := os.Getwd()
 	ImgPath = dir + ImgPath
-	defer tool.End()
 	startDownload()
 }
 
 func startDownload() {
-	currentUrl := URL + strconv.Itoa(pageIndex)
+	currentUrl := url + strconv.Itoa(pageIndex)
 	resp, err := tool.Get(currentUrl, Header)
 	if err != nil {
 		return

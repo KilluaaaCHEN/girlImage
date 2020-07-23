@@ -18,3 +18,4 @@ func Wait() {
 	var enter string
 	fmt.Scanln(&enter)
 }
+
