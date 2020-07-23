@@ -30,7 +30,7 @@ func ProtectRun(entry func()) {
 }
 
 func main() {
-	// 故意造成空指针访问错误
+	defer tool.End()
 	ProtectRun(func() {
 		var path string
 		fmt.Printf("请输入图片路径:")
@@ -40,10 +40,8 @@ func main() {
 		}
 		if !tool.Exist(path) {
 			fmt.Println("Error:目录不存在")
-			tool.Wait()
 			return
 		}
-		defer tool.End()
 		filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 			if !info.IsDir() && !strings.Contains(path, ".DS_Store") {
 				wg.Add(1)
@@ -53,13 +51,16 @@ func main() {
 		})
 		wg.Wait()
 	})
-	tool.Wait()
 }
 
 func cutFile(oldFile string) {
-	fmt.Println(oldFile)
 	defer wg.Done()
 	newFile := strings.Replace(oldFile, "images", "new-images", 1)
+	if tool.Exist(newFile) {
+		fmt.Print("Exists\r")
+		return
+	}
+	fmt.Print(oldFile + "\r")
 	char := "/"
 	if runtime.GOOS == "windows" {
 		char = "\\"
@@ -67,13 +68,13 @@ func cutFile(oldFile string) {
 	tool.CheckDir(newFile[0:strings.LastIndex(newFile, char)])
 	src, err := imaging.Open(oldFile)
 	if err != nil {
-		fmt.Printf("failed to open file: %v, error:%v", oldFile, err)
+		fmt.Printf("failed to open file: %v, error:%v\n", oldFile, err)
 		return
 	}
 	src = imaging.Fill(src, src.Bounds().Max.X, src.Bounds().Max.Y-30, imaging.TopLeft, imaging.Lanczos)
 	err = imaging.Save(src, newFile)
 	if err != nil {
-		fmt.Printf("failed to save file: %v, error:%v", oldFile, err)
+		fmt.Printf("failed to save file: %v, error:%v\n", oldFile, err)
 		return
 	}
 }

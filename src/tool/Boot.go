@@ -9,7 +9,7 @@ var t = time.Now()
 
 func End() {
 	elapsed := time.Since(t)
-	fmt.Println("Done\nElapsed time:", elapsed)
+	fmt.Println("\n\nDone\nElapsed time:", elapsed)
 	Wait()
 }
 
